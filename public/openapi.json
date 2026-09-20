@@ -1,0 +1,67 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HoodGate Read API",
+    "version": "0.1.0",
+    "description": "Public service metadata and read-only upstream data. No settlement endpoints."
+  },
+  "paths": {
+    "/api/catalog": {
+      "get": {
+        "operationId": "readCatalog",
+        "responses": {
+          "200": {
+            "description": "Curated catalog"
+          }
+        }
+      }
+    },
+    "/api/live/{kind}": {
+      "get": {
+        "operationId": "readLiveData",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "network",
+                "models",
+                "markets",
+                "agents",
+                "kraken",
+                "weather",
+                "defi",
+                "search",
+                "wiki",
+                "commons",
+                "github"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider data with source timestamp and stale flag"
+          },
+          "400": {
+            "description": "Invalid query"
+          },
+          "502": {
+            "description": "Provider unavailable"
+          }
+        }
+      }
+    }
+  }
+}
