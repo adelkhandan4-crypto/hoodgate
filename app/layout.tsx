@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import './hoodgate.css';
 import './motion.css';
+import './directory.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  icons: { icon: '/icon.svg' },
+  icons: { icon: '/icon.png' },
   // Browser translation must not rewrite server-rendered text before hydration.
   other: { google: 'notranslate' },
   title: 'HoodGate — the machine economy on Robinhood',

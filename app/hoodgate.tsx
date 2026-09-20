@@ -19,6 +19,8 @@ import { Resources } from './resources';
 import { useWallet } from './use-wallet';
 import { short, useLive, PageHeading } from './shared';
 import { services } from '@/lib/catalog';
+import { LaunchSettings, ContractBar, SocialLink } from './launch-settings';
+import { flushSync } from 'react-dom';
 export default function HoodGate({
   initialPath = '/',
 }: {
@@ -32,9 +34,20 @@ export default function HoodGate({
   const page = path.replace(/^\//, '');
   const connect = () => setWalletOpen(true);
   function navigate(url: string) {
-    history.pushState({}, '', url);
-    setPath(new URL(url, location.origin).pathname);
-    scrollTo({ top: 0, behavior: 'instant' });
+    const change = () => {
+      history.pushState({}, '', url);
+      flushSync(() => setPath(new URL(url, location.origin).pathname));
+      scrollTo({ top: 0, behavior: 'instant' });
+    };
+    const transitionDocument = document as Document & {
+      startViewTransition?: (update: () => void) => unknown;
+    };
+    if (
+      transitionDocument.startViewTransition &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+      transitionDocument.startViewTransition(change);
+    else change();
   }
   useEffect(() => {
     const back = () => setPath(location.pathname);
@@ -182,66 +195,81 @@ export default function HoodGate({
       </PageHeading>
     );
   return (
-    <>
-      <header className="header">
-        <a href="/" className="brand">
-          <span className="mark">▦</span>
-          <i>hood</i>
-          <b>gate.</b>
-        </a>
-        <nav>
-          {[
-            ['Marketplace', '/marketplace'],
-            ['Agents', '/agents'],
-            ['Earn', '/earn'],
-            ['Blog', '/blog'],
-            ['Token', '/token'],
-          ].map(([label, url]) => (
-            <a
-              className={path.startsWith(url) ? 'active' : ''}
-              href={url}
-              key={url}
-            >
-              {label}
+    <LaunchSettings>
+      <div className="site-chrome">
+        <ContractBar />
+        <header className="header">
+          <a href="/" className="brand">
+            <span className="brand-sculpture">
+              <img src="/art/gate.webp" alt="" width={48} height={48} />
+            </span>
+            <i>hood</i>
+            <b>gate.</b>
+          </a>
+          <nav>
+            {[
+              ['Marketplace', '/marketplace'],
+              ['Agents', '/agents'],
+              ['Earn', '/earn'],
+              ['Blog', '/blog'],
+              ['Token', '/token'],
+            ].map(([label, url]) => (
+              <a
+                className={path.startsWith(url) ? 'active' : ''}
+                href={url}
+                key={url}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+          <div className="header-tools">
+            <SocialLink />
+            <a href="/docs" aria-label="Documentation">
+              Docs ↗
             </a>
-          ))}
-        </nav>
-        <div className="header-tools">
-          <a href="/docs" aria-label="Documentation">
-            Docs ↗
-          </a>
-          <a
-            href="https://github.com/adelkhandan4-crypto/hoodgate"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="GitHub and source"
-          >
-            GitHub ↗
-          </a>
-          <div className="language">
-            <button
-              onClick={() => setLang(!lang)}
-              aria-expanded={lang}
-              aria-label="Language"
+            <a
+              href="https://github.com/adelkhandan4-crypto/hoodgate"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub and source"
             >
-              EN ⌄
-            </button>
-            {lang && (
-              <div>
-                <button onClick={() => setLang(false)}>English ✓</button>
-              </div>
-            )}
+              GitHub ↗
+            </a>
+            <div className="language">
+              <button
+                onClick={() => setLang(!lang)}
+                aria-expanded={lang}
+                aria-label="Language"
+              >
+                EN ⌄
+              </button>
+              {lang && (
+                <div>
+                  <button onClick={() => setLang(false)}>English ✓</button>
+                </div>
+              )}
+            </div>
+            <Button className="btn" onClick={connect}>
+              {wallet.account ? short(wallet.account) : 'Connect'}
+            </Button>
           </div>
-          <Button className="btn" onClick={connect}>
-            {wallet.account ? short(wallet.account) : 'Connect'}
-          </Button>
+        </header>
+      </div>
+      <main className={page ? 'workspace-page' : ''} data-page={page || 'home'}>
+        <div className="route-content" key={page}>
+          {content}
         </div>
-      </header>
-      <main className={page ? 'workspace-page' : ''}>{content}</main>
+      </main>
       <footer>
+        <div className="footer-social">
+          <SocialLink />
+        </div>
         <div className="footer-brand">
           <a href="/" className="brand">
-            <span className="mark">▦</span>
+            <span className="brand-sculpture">
+              <img src="/art/gate.webp" alt="" width={48} height={48} />
+            </span>
             <i>hood</i>
             <b>gate.</b>
           </a>
@@ -359,6 +387,6 @@ export default function HoodGate({
           {wallet.error && <p className="error">{wallet.error}</p>}
         </DialogContent>
       </Dialog>
-    </>
+    </LaunchSettings>
   );
 }

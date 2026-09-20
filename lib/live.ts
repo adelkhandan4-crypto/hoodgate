@@ -1,4 +1,10 @@
 import { REGISTRY } from './catalog';
+import {
+  decodeTokenURI,
+  enrichAgent,
+  publicLink,
+  metadataURL,
+} from './agent-metadata';
 const cache = new Map<string, { at: number; data: any }>(),
   pending = new Map<string, Promise<any>>();
 async function json(url: string, init?: RequestInit): Promise<any> {
@@ -126,7 +132,7 @@ async function retrieve(kind: string, q: string) {
           name: a.metadata?.name || 'Agent #' + a.id,
           description: a.metadata?.description || '',
           owner: a.owner?.hash || '',
-          image: a.image_url,
+          image: publicLink(a.image_url),
           registry: REGISTRY,
         }));
       } catch {
@@ -164,13 +170,16 @@ async function retrieve(kind: string, q: string) {
         });
         if (!Array.isArray(response)) throw Error('Registry RPC unavailable');
         const byId = new Map(response.map((r: any) => [r.id, r.result]));
-        return ids.flatMap((id) => {
+        const identities = ids.flatMap((id) => {
           const owner = byId.get(id * 2) as string | undefined;
           if (!owner || owner.length !== 66) return [];
           return [
             {
               id: String(id),
               name: 'Agent #' + id,
+              metadataUri: metadataURL(
+                decodeTokenURI(String(byId.get(id * 2 + 1) || '')),
+              ),
               description:
                 'Public ERC-8004 identity - read directly from the registry',
               owner: '0x' + owner.slice(-40),
@@ -178,6 +187,7 @@ async function retrieve(kind: string, q: string) {
             },
           ];
         });
+        return Promise.all(identities.map(enrichAgent));
       }
     }
 
@@ -251,7 +261,12 @@ async function retrieve(kind: string, q: string) {
 export async function live(kind: string, q = '') {
   const key = kind + ':' + q,
     old = cache.get(key),
-    ttl = kind === 'network' ? 20000 : kind === 'models' ? 300000 : 60000;
+    ttl =
+      kind === 'network'
+        ? 20000
+        : kind === 'models' || kind === 'agents'
+          ? 300000
+          : 60000;
   if (old && Date.now() - old.at < ttl) return { ...old, stale: false };
   if (pending.has(key)) return pending.get(key);
   const task = retrieve(kind, q)

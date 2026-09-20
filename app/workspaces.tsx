@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { ServiceLogo, AgentPortrait } from './identity-art';
+import { Art } from './product-art';
 import {
   Dialog,
   DialogContent,
@@ -35,9 +37,36 @@ export function Marketplace() {
   );
   return (
     <>
-      <PageHeading tag="HOODMARKET / DISCOVER" title="Featured services">
-        Explore the APIs behind the machine economy.
-      </PageHeading>
+      <div className="directory-intro market-intro">
+        <div>
+          <p className="eyebrow">THE SERVICE EXCHANGE / 01</p>
+          <h1>
+            Find your next
+            <br />
+            <i>connection.</i>
+          </h1>
+          <p>
+            Models, market feeds and on-chain intelligence.
+            <br />
+            One place to find the service behind your next idea.
+          </p>
+          <div className="directory-facts">
+            <span>
+              <strong>{services.length}</strong> services
+            </span>
+            <span>
+              <strong>{categories.length}</strong> categories
+            </span>
+            <span>
+              <strong>{models.data?.length || '—'}</strong> models
+            </span>
+          </div>
+        </div>
+        <div className="directory-art" aria-hidden="true">
+          <Art kind="modules" />
+          <span>DISCOVER / CONNECT / BUILD</span>
+        </div>
+      </div>
       <div className="filter-bar">
         <div className="tabs">
           {categories.map((c) => (
@@ -60,7 +89,7 @@ export function Marketplace() {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <div className="four-grid">
+      <div className="four-grid catalog-grid" key={category + query}>
         {filtered.map((s) => {
           const subset = models.data?.filter(
             (m: any) => !s.provider || m.id.startsWith(s.provider),
@@ -71,7 +100,7 @@ export function Marketplace() {
               href={'/marketplace/' + s.id}
               key={s.id}
             >
-              <span className="service-icon">{s.icon}</span>
+              <ServiceLogo id={s.id} name={s.name} />
               <h3>{s.name}</h3>
               <p>{s.description}</p>
               <div className="row">
@@ -110,7 +139,7 @@ export function Marketplace() {
               href={'/marketplace/' + s.id}
               key={s.id}
             >
-              <span className="product-icon">{s.icon}</span>
+              <ServiceLogo id={s.id} name={s.name} />
               <h3>{s.name}</h3>
               <p>{s.description}</p>
               <span className="text-link">Explore live data ↗</span>
@@ -163,6 +192,7 @@ export function ServiceDetail({
         {s.description}
       </PageHeading>
       <div className="row detail-meta">
+        <ServiceLogo id={s.id} name={s.name} />
         <span className="tag">
           {s.category === 'Blockchain'
             ? 'Robinhood Chain'
@@ -660,69 +690,163 @@ export function Builder({
 }
 export function Registry({ detail }: { detail?: string }) {
   const result = useLive('agents');
-  const [query, setQuery] = useState('');
-  const filtered = (result.data || []).filter(
+  const [query, setQuery] = useState(''),
+    [filter, setFilter] = useState('All agents');
+  const all = result.data || [];
+  const filtered = all.filter(
     (a: any) =>
-      (!detail || a.id === detail) &&
-      (a.name + ' ' + a.id + ' ' + a.owner)
+      (!detail || String(a.id) === detail) &&
+      (filter !== 'With profiles' || a.metadataAvailable) &&
+      [a.name, a.description, a.id, a.owner, ...(a.tags || [])]
+        .join(' ')
         .toLowerCase()
         .includes(query.toLowerCase()),
   );
   return (
     <>
-      <PageHeading
-        tag="HOODIDENTITY / ERC-8004"
-        title={detail ? 'Agent identity' : 'Agent registry'}
-      >
-        Public identities on Robinhood Chain, read from the shared ERC-8004
-        registry. These records are network activity, not registrations created
-        by HoodGate.
-      </PageHeading>
-      <div className="filter-bar">
-        <a
-          className="text-link"
-          href={'https://robinhoodchain.blockscout.com/address/' + REGISTRY}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Identity Registry ↗
+      {detail ? (
+        <a className="text-link" href="/agents">
+          ← All identities
         </a>
+      ) : null}
+      <div className="directory-intro agents-intro">
+        <div>
+          <p className="eyebrow">THE IDENTITY NETWORK / 02</p>
+          <h1>
+            {detail ? (
+              'Meet the agent.'
+            ) : (
+              <>
+                Intelligence.
+                <br />
+                <i>With an identity.</i>
+              </>
+            )}
+          </h1>
+          <p>
+            Meet the agents building on Robinhood Chain.
+            <br />
+            Explore their published profiles, capabilities and owners.
+          </p>
+          <div className="directory-facts">
+            <span>
+              <strong>{all.length || '—'}</strong> identities shown
+            </span>
+            <span>
+              <strong>
+                {all.filter((a: any) => a.metadataAvailable).length || '—'}
+              </strong>{' '}
+              public profiles
+            </span>
+            <span>ERC-8004</span>
+          </div>
+        </div>
+        <div className="directory-art agent-radar" aria-hidden="true">
+          <Art kind="agent" />
+          <span>IDENTITY / CAPABILITY / CONNECTION</span>
+        </div>
+      </div>
+      <div className="filter-bar">
+        <div className="tabs">
+          {['All agents', 'With profiles'].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={filter === f ? 'active' : ''}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
         <input
           aria-label="Search agents"
-          placeholder="Name, ID or owner…"
+          placeholder="Search names, capabilities or owners…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <Source data={result} name="Blockscout / ERC-8004" />
-      <div className="three-grid">
+      <Source data={result} name="Robinhood registry + publisher metadata" />
+      <div className={'agent-directory ' + (detail ? 'agent-detail-grid' : '')}>
         {filtered.map((a: any) => (
-          <article className="service-card" key={a.id}>
-            <span className="service-icon">⌘</span>
-            <a href={'/agents/' + a.id}>
-              <h3>{a.name}</h3>
-            </a>
-            <span className="tag">AGENT #{a.id}</span>
-            <p>{a.description.slice(0, 180) || 'On-chain identity record'}</p>
-            <a
-              className="text-link"
-              href={
-                'https://robinhoodchain.blockscout.com/token/' +
-                REGISTRY +
-                '/instance/' +
-                a.id
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              {short(a.owner)} ↗
-            </a>
+          <article className="agent-card" key={a.id}>
+            <AgentPortrait id={String(a.id)} name={a.name} image={a.image} />
+            <div className="agent-card-body">
+              <div className="agent-caption">
+                <span>ERC-8004</span>
+                <span>
+                  {a.metadataAvailable
+                    ? 'PUBLISHED PROFILE'
+                    : 'ON-CHAIN IDENTITY'}
+                </span>
+              </div>
+              <a href={'/agents/' + a.id}>
+                <h2>{a.name}</h2>
+              </a>
+              <p>
+                {a.description ||
+                  'A registered agent identity. Its owner has not published a public description.'}
+              </p>
+              <div className="capability-tags">
+                {(a.tags || []).slice(0, 3).map((tag: string) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+              <div className="agent-owner">
+                <span>OWNER</span>
+                <a
+                  href={
+                    'https://robinhoodchain.blockscout.com/address/' + a.owner
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {short(a.owner)} ↗
+                </a>
+              </div>
+              <div className="agent-actions">
+                {a.website ? (
+                  <a href={a.website} target="_blank" rel="noopener noreferrer">
+                    Open project ↗
+                  </a>
+                ) : (
+                  <a href={'/agents/' + a.id}>View identity ↗</a>
+                )}
+                {a.metadataUri ? (
+                  <a
+                    href={a.metadataUri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Metadata
+                  </a>
+                ) : null}
+                <a
+                  href={
+                    'https://robinhoodchain.blockscout.com/token/' +
+                    REGISTRY +
+                    '/instance/' +
+                    a.id
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Explorer ↗
+                </a>
+              </div>
+            </div>
           </article>
         ))}
       </div>
-      {!result.loading && !filtered.length && (
-        <div className="empty">No matching registry records.</div>
-      )}
+      {!result.loading && !filtered.length ? (
+        <div className="empty">
+          No matching agents. Try a different name or capability.
+        </div>
+      ) : null}
+      <p className="registry-note">
+        Profiles are published by their owners in the shared Robinhood Chain
+        registry. Names and descriptions are self-reported; registration is not
+        an endorsement by HoodGate.
+      </p>
       <a className="btn" href="/dashboard">
         Prepare a service identity →
       </a>

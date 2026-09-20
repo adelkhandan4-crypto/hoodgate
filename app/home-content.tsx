@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { HeroArt, ProductArt, Art } from './product-art';
 import GoldField from './gold-field';
+import SceneNavigation from './scene-navigation';
 export const products = [
   [
     'HoodMarket',
@@ -76,7 +77,8 @@ export default function HomeContent({ network }: { network: any }) {
   }, [paused]);
   return (
     <div className="homepage" ref={root}>
-      <section className="hero hero-alive">
+      <SceneNavigation />
+      <section className="hero hero-alive" id="intro">
         <GoldField />
         <HeroArt />
         <div className="hero-inner">
@@ -155,7 +157,7 @@ export default function HomeContent({ network }: { network: any }) {
         </div>
       </section>
       <div className="page-sections">
-        <section>
+        <section id="rails">
           <p className="eyebrow">THE RAILS</p>
           <h2>
             One gateway.
@@ -217,6 +219,7 @@ export default function HomeContent({ network }: { network: any }) {
           </a>
         </section>
         <section
+          id="request"
           className="payment-section"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
@@ -279,7 +282,7 @@ export default function HomeContent({ network }: { network: any }) {
             }
           </pre>
         </section>
-        <section>
+        <section id="ecosystem">
           <p className="eyebrow">THE STACK</p>
           <h2>
             A home for <i>machine commerce.</i>
@@ -298,7 +301,7 @@ export default function HomeContent({ network }: { network: any }) {
             ))}
           </div>
         </section>
-        <section className="flywheel">
+        <section className="flywheel" id="network">
           <div>
             <p className="eyebrow">THE NETWORK EFFECT</p>
             <h2>
@@ -330,7 +333,7 @@ export default function HomeContent({ network }: { network: any }) {
             <span>04 / RECEIPTS</span>
           </div>
         </section>
-        <section className="closing closing-illustrated">
+        <section className="closing closing-illustrated" id="build">
           <Art kind="modules" className="closing-art" />
           <p className="eyebrow">GET STARTED</p>
           <h2>

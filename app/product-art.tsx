@@ -68,6 +68,17 @@ export function HeroArt() {
       }}
       aria-hidden="true"
     >
+      <div className="portal-satellites">
+        {['openrouter', 'anthropic', 'openai', 'kraken'].map((id, i) => (
+          <span
+            className="portal-satellite"
+            key={id}
+            style={{ '--delay': -i * 9.5 + 's' } as React.CSSProperties}
+          >
+            <img src={'/logos/' + id + '.png'} alt="" width={24} height={24} />
+          </span>
+        ))}
+      </div>
       <div className="hero-orbit orbit-one" />
       <div className="hero-orbit orbit-two" />
       <div className="hero-sculpture">

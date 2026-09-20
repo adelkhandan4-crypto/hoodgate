@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { PageHeading, Code, short } from './shared';
 import { services, USDG } from '@/lib/catalog';
 import { products } from './home-content';
+import { useLaunchSettings } from './launch-settings';
 import { ProductArt, Art } from './product-art';
 export const articles = [
   {
@@ -34,6 +35,7 @@ export function Resources({
   wallet: any;
   onConnect: () => void;
 }) {
+  const launch = useLaunchSettings();
   const [tab, setTab] = useState(0),
     [message, setMessage] = useState(''),
     [messages, setMessages] = useState<string[]>([]),
@@ -251,7 +253,13 @@ export function Resources({
         </PageHeading>
         <div className="two-grid">
           <section className="work-panel">
-            <span className="large-mark">▦</span>
+            <img
+              className="token-brand"
+              src="/art/gate.webp"
+              width={140}
+              height={140}
+              alt="HoodGate"
+            />
             <h2>HoodGate</h2>
             <p>Built around the machine economy on Robinhood Chain.</p>
             <dl className="details">
@@ -260,7 +268,9 @@ export function Resources({
               <dt>Ticker</dt>
               <dd>To be announced</dd>
               <dt>Contract</dt>
-              <dd>To be announced</dd>
+              <dd className="token-address">
+                {launch.contract || 'To be announced'}
+              </dd>
             </dl>
           </section>
           <section className="work-panel">

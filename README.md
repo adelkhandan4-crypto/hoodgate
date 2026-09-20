@@ -53,3 +53,11 @@ npm run build
 Public providers impose rate limits and may change availability. Production operators should review upstream terms and monitor errors.
 
 Independent project. Not affiliated with Robinhood, MeshGateway or listed service providers. No private keys or API secrets are required for the included read-only features.
+
+## Contract and social settings
+
+See [FAST-CONTRACT-UPDATE.md](FAST-CONTRACT-UPDATE.md). The header and Token page read `public/token.json` every five seconds while visible. The project contract and official X URL are initially empty.
+
+## Directory identities
+
+Provider logos in `public/logos` are locally stored favicons retrieved from the providers’ domains through Google’s favicon service. They identify listed integrations and do not imply endorsement. The generated gold gateway is also used as HoodGate’s brand mark and favicon. Agent names, descriptions and artwork come from publisher metadata linked to ERC-8004 records. Missing metadata stays explicitly unnamed; profiles are not verification or endorsement. Server-side metadata retrieval only accepts the known HTTPS hosts listed in `lib/agent-metadata.ts`, rejects redirects and limits time and response size.
