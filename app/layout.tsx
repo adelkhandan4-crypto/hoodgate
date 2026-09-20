@@ -14,7 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  icons: {icon: "/icon.svg"},
+  icons: { icon: '/icon.svg' },
+  // Browser translation must not rewrite server-rendered text before hydration.
+  other: { google: 'notranslate' },
   title: 'HoodGate — the machine economy on Robinhood',
   description:
     'Discover services and configure payment offers on Robinhood Chain.',
@@ -26,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" translate="no" className="dark notranslate">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
