@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { PageHeading, Code, short } from './shared';
 import { services, USDG } from '@/lib/catalog';
 import { products } from './home-content';
+import { ProductArt, Art } from './product-art';
 export const articles = [
   {
     slug: 'machine-readable-commerce',
@@ -122,6 +123,7 @@ export function Resources({
         <div className="three-grid">
           {products.map(([n, p, i, d]) => (
             <a className="product-card" href={'/' + p} key={n}>
+              <ProductArt product={p} />
               <span className="product-icon">{i}</span>
               <h2>{n}</h2>
               <p>{d}</p>
@@ -398,6 +400,7 @@ export function Resources({
               key={a.slug}
             >
               <div className={'article-art art-' + i}>
+                <Art kind={['gate', 'modules', 'agent'][i % 3]} />
                 <span>{['402', '0x', '8004'][i]}</span>
               </div>
               <p className="eyebrow">{a.tag}</p>

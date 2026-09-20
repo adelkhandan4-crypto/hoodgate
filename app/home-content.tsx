@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { HeroArt, ProductArt, Art } from './product-art';
 import GoldField from './gold-field';
 export const products = [
   [
@@ -41,6 +42,30 @@ export const products = [
 ];
 const stages = ['Discover', 'Request', 'Authorize', 'Settle', 'Receipt'];
 export default function HomeContent({ network }: { network: any }) {
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const host = root.current;
+    if (!host || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const nodes = host.querySelectorAll(
+      '.page-sections > section, .product-card',
+    );
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        }),
+      { threshold: 0.08 },
+    );
+    nodes.forEach((node) => {
+      if (node.getBoundingClientRect().top > innerHeight)
+        node.classList.add('reveal-item');
+      observer.observe(node);
+    });
+    return () => observer.disconnect();
+  }, []);
   const [step, setStep] = useState(0),
     [paused, setPaused] = useState(false);
   useEffect(() => {
@@ -50,19 +75,18 @@ export default function HomeContent({ network }: { network: any }) {
     return () => clearInterval(t);
   }, [paused]);
   return (
-    <>
-      <section className="hero">
+    <div className="homepage" ref={root}>
+      <section className="hero hero-alive">
         <GoldField />
+        <HeroArt />
         <div className="hero-inner">
           <p className="eyebrow">THE MACHINE ECONOMY · ROBINHOOD CHAIN</p>
           <h1>
             <i>hood</i> gate<span>.</span>
           </h1>
           <p className="hero-description">
-            A gateway for agents, builders and machine commerce.
-            <br />
-            Discover services, compose payment offers and bring
-            <br />
+            A gateway for agents, builders and machine commerce. <br />
+            Discover services, compose payment offers and bring <br />
             your next idea to Robinhood Chain.
           </p>
           <div className="actions">
@@ -82,6 +106,30 @@ export default function HomeContent({ network }: { network: any }) {
           </div>
         </div>
       </section>
+      <div
+        className="protocol-ribbon"
+        aria-label="Connected technologies: OpenRouter, Robinhood Chain, ERC-8004, Kraken, x402 and USDG"
+      >
+        <div className="protocol-track" aria-hidden="true">
+          {[0, 1].map((n) => (
+            <div key={n}>
+              {[
+                'OpenRouter',
+                'Robinhood Chain',
+                'ERC-8004',
+                'Kraken',
+                'x402',
+                'USDG',
+              ].map((label) => (
+                <span key={label}>
+                  <i>✦</i>
+                  {label}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
       <section className="intro-strip">
         <div>
           <small>LATEST BLOCK</small>
@@ -193,26 +241,32 @@ export default function HomeContent({ network }: { network: any }) {
               </button>
             ))}
           </div>
-          <div className="flow">
+          <div className="flow illustrated-flow" data-step={step}>
             <div>
-              <b>⌁</b>
+              <b>
+                <Art kind="agent" />
+              </b>
               <strong>AGENT</strong>
               <small>discovers an offer</small>
             </div>
             <span className={'flow-line ' + (step > 0 ? 'lit' : '')}></span>
             <div className="gate-node">
-              <b>▦</b>
+              <b>
+                <Art kind="gate" />
+              </b>
               <strong>HOODGATE</strong>
               <small>coordinates the request</small>
             </div>
             <span className={'flow-line ' + (step > 2 ? 'lit' : '')}></span>
             <div>
-              <b>◇</b>
+              <b>
+                <Art kind="modules" />
+              </b>
               <strong>MERCHANT</strong>
               <small>owns the endpoint</small>
             </div>
           </div>
-          <pre className="terminal">
+          <pre className="terminal" key={step}>
             <span className="gold-text">$ </span>
             {
               [
@@ -233,6 +287,7 @@ export default function HomeContent({ network }: { network: any }) {
           <div className="three-grid">
             {products.map(([name, path, icon, desc]) => (
               <a className="product-card" href={'/' + path} key={name}>
+                <ProductArt product={path} />
                 <span className="product-icon">{icon}</span>
                 <h3>{name}</h3>
                 <p>{desc}</p>
@@ -266,15 +321,17 @@ export default function HomeContent({ network }: { network: any }) {
               Explore the rewards framework →
             </a>
           </div>
-          <div className="orbit">
+          <div className="orbit orbit-illustrated">
+            <Art kind="agent" />
             <span>01 / BUILDERS</span>
             <span>02 / AGENTS</span>
-            <strong>H / G</strong>
+            <strong className="orbit-monogram">H / G</strong>
             <span>03 / PAYMENTS</span>
             <span>04 / RECEIPTS</span>
           </div>
         </section>
-        <section className="closing">
+        <section className="closing closing-illustrated">
+          <Art kind="modules" className="closing-art" />
           <p className="eyebrow">GET STARTED</p>
           <h2>
             Your next service.
@@ -295,6 +352,6 @@ export default function HomeContent({ network }: { network: any }) {
           </div>
         </section>
       </div>
-    </>
+    </div>
   );
 }
