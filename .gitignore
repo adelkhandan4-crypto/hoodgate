@@ -39,4 +39,5 @@ next-env.d.ts
 
 *.tsbuildinfo
 /public/hoodgate-source.zip
-/.openai/
+/.openai/*
+!/.openai/hosting.json

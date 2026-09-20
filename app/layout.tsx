@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  icons: {icon: "/icon.svg"},
   title: 'HoodGate — the machine economy on Robinhood',
   description:
     'Discover services and configure payment offers on Robinhood Chain.',
