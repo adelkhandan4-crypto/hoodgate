@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import HomeContent from './home-content';
+import GoldField from './gold-field';
 import {
   Marketplace,
   ServiceDetail,
@@ -196,6 +197,7 @@ export default function HoodGate({
     );
   return (
     <LaunchSettings>
+      <GoldField />
       <div className="site-chrome">
         <ContractBar />
         <header className="header">

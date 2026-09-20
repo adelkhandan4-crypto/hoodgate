@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { HeroArt, ProductArt, Art } from './product-art';
-import GoldField from './gold-field';
+import { ProtocolCard } from './protocol-card';
 import SceneNavigation from './scene-navigation';
 export const products = [
   [
@@ -79,7 +79,6 @@ export default function HomeContent({ network }: { network: any }) {
     <div className="homepage" ref={root}>
       <SceneNavigation />
       <section className="hero hero-alive" id="intro">
-        <GoldField />
         <HeroArt />
         <div className="hero-inner">
           <p className="eyebrow">THE MACHINE ECONOMY · ROBINHOOD CHAIN</p>
@@ -170,7 +169,7 @@ export default function HomeContent({ network }: { network: any }) {
             transparent destinations and machine-readable requirements.
           </p>
           <div className="two-grid">
-            <article className="line-card">
+            <ProtocolCard variant="mpp">
               <div className="row">
                 <h3>MPP</h3>
                 <span className="tag">OPEN STANDARD</span>
@@ -188,8 +187,8 @@ export default function HomeContent({ network }: { network: any }) {
               >
                 Explore the protocol ↗
               </a>
-            </article>
-            <article className="line-card">
+            </ProtocolCard>
+            <ProtocolCard variant="x402">
               <div className="row">
                 <h3>x402</h3>
                 <span className="tag">USDG · ROBINHOOD CHAIN</span>
@@ -202,7 +201,7 @@ export default function HomeContent({ network }: { network: any }) {
               <a className="text-link" href="/facilitator">
                 Explore the facilitator →
               </a>
-            </article>
+            </ProtocolCard>
           </div>
           <div className="two-grid code-grid">
             <article>

@@ -81,6 +81,16 @@ export function HeroArt() {
       </div>
       <div className="hero-orbit orbit-one" />
       <div className="hero-orbit orbit-two" />
+      <svg width="0" height="0" className="art-filter-defs" aria-hidden="true">
+        <defs>
+          <filter id="gold-background-key" colorInterpolationFilters="sRGB">
+            <feColorMatrix
+              type="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  2 3 1 0 -0.24"
+            />
+          </filter>
+        </defs>
+      </svg>
       <div className="hero-sculpture">
         <img
           src="/art/gate.webp"

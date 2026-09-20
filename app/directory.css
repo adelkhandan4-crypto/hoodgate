@@ -713,7 +713,7 @@ footer {
     grid-row: 2;
   }
   .directory-art img {
-  mask-image: radial-gradient(ellipse at center, #000 44%, transparent 73%);
+    mask-image: radial-gradient(ellipse at center, #000 44%, transparent 73%);
     width: 230px;
     margin: auto;
   }
@@ -775,6 +775,211 @@ footer {
   .agent-card,
   .provider-logo,
   .brand-sculpture img {
+    transition: none;
+  }
+}
+/* One continuous interactive field behind every route. */
+.site-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.8;
+  mask-image: none;
+}
+main {
+  position: relative;
+  z-index: 1;
+}
+footer {
+  z-index: 1;
+}
+.hero-alive {
+  isolation: auto;
+}
+.art-filter-defs {
+  position: absolute;
+  pointer-events: none;
+}
+.hero-sculpture img {
+  filter: url(#gold-background-key);
+  mix-blend-mode: normal;
+}
+.protocol-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #83704455;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #191910f2, #0c0f0cf5);
+  transform: perspective(1000px) rotateX(var(--card-rx, 0deg))
+    rotateY(var(--card-ry, 0deg));
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.4s,
+    box-shadow 0.4s;
+}
+.protocol-card:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    320px circle at var(--light-x, 50%) var(--light-y, 20%),
+    #edc36c20,
+    transparent 75%
+  );
+  opacity: 0.25;
+  transition: opacity 0.5s;
+}
+.protocol-card:hover,
+.protocol-card:focus-within {
+  border-color: #dcb56888;
+  box-shadow: 0 24px 70px #0005;
+}
+.protocol-card:hover:before,
+.protocol-card:focus-within:before {
+  opacity: 1;
+}
+.protocol-card > * {
+  position: relative;
+}
+.protocol-circuit {
+  margin: -6px 0 32px;
+}
+.protocol-circuit svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.circuit-wire {
+  stroke: #d1ac583b;
+  stroke-width: 1;
+}
+.circuit-packet {
+  stroke: #f4d58f;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 7 93;
+  animation: circuit-travel 5s linear infinite;
+  filter: drop-shadow(0 0 4px #eebd50);
+}
+.packet-return {
+  animation-delay: -2.5s;
+  opacity: 0.6;
+}
+.protocol-x402 .circuit-packet {
+  animation-delay: -1.5s;
+}
+.circuit-node rect {
+  fill: #151912;
+  stroke: #be985482;
+  stroke-width: 1;
+  animation: circuit-node-glow 5s ease-in-out infinite;
+}
+.circuit-node path {
+  stroke: #d6b876;
+  stroke-width: 1;
+}
+.node-1 rect {
+  animation-delay: -1.7s;
+}
+.node-2 rect {
+  animation-delay: -3.4s;
+}
+.circuit-labels {
+  display: flex;
+  justify-content: space-between;
+  font:
+    9px var(--font-geist-mono),
+    monospace;
+  letter-spacing: 1.7px;
+  color: #9c8c65;
+  margin-top: 12px;
+}
+.protocol-card h3 {
+  transition: color 0.4s;
+}
+.protocol-card:hover h3 {
+  color: #f6d991;
+}
+.protocol-card .text-link {
+  display: inline-flex;
+  transition:
+    gap 0.3s,
+    transform 0.3s;
+}
+.protocol-card .text-link:hover {
+  transform: translateX(5px);
+}
+#rails .code-grid article {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.4s,
+    transform 0.4s;
+  background: #10120fea;
+}
+#rails .code-grid article:hover {
+  border-color: #bb95556b;
+  transform: translateY(-4px);
+}
+#rails .code-grid article:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e4bd69, transparent);
+  transform: translateX(-100%);
+  transition: transform 0.8s;
+}
+#rails .code-grid article:hover:after {
+  transform: translateX(100%);
+}
+@keyframes circuit-travel {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+@keyframes circuit-node-glow {
+  0%,
+  70%,
+  100% {
+    fill: #151912;
+    stroke: #be985482;
+  }
+  30% {
+    fill: #584420;
+    stroke: #f5d289;
+  }
+}
+@media (max-width: 700px) {
+  .protocol-circuit {
+    margin-bottom: 26px;
+  }
+  .circuit-labels {
+    font-size: 8px;
+    letter-spacing: 0.8px;
+  }
+  .site-field {
+    opacity: 0.65;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .circuit-packet,
+  .circuit-node rect {
+    animation: none;
+  }
+  .protocol-card,
+  #rails .code-grid article,
+  .protocol-card .text-link {
+    transform: none !important;
+    transition: none;
+  }
+  .protocol-card:before,
+  #rails .code-grid article:after {
     transition: none;
   }
 }
